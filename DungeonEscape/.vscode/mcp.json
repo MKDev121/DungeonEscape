@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"UnityMCP": {
+			"url": " http://localhost:8080/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
