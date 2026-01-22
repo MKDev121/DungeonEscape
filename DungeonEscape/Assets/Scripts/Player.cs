@@ -36,6 +36,12 @@ public class Player : MonoBehaviour
     private float speed;
     bool rolling;
 
+    // Health system
+    public Slider healthBar;
+    [SerializeField]
+    private float maxHealth = 100f;
+    private float currentHealth;
+
     float timer;
 
     int actionType;
@@ -50,6 +56,10 @@ public class Player : MonoBehaviour
             Dice.GetComponentInChildren<Button>().enabled = false;
 
         animator = GetComponent<Animator>();
+
+        // Initialize health
+        currentHealth = maxHealth;
+        UpdateHealthBar();
     }
 
     void Update()
@@ -166,4 +176,54 @@ public class Player : MonoBehaviour
 
     }
 
+    // Health system methods
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+        UpdateHealthBar();
+
+        if (currentHealth <= 0f)
+        {
+            OnDeath();
+        }
+    }
+
+    public void Heal(float amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            healthBar.value = currentHealth / maxHealth;
+        }
+    }
+
+    private void OnDeath()
+    {
+        // Handle player death
+        playerTurn = false;
+        animator.SetTrigger("die");
+        Debug.Log("Player has died!");
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public bool IsAlive()
+    {
+        return currentHealth > 0f;
+    }
 }
